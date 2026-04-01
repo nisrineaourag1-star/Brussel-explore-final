@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brussels Explorer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="hero">
+        <div class="hero-content">
+            <p class="tag">Dynamic Web Project</p>
+            <h1>Brussels Explorer</h1>
+            <p class="hero-text">
+                Discover cultural, touristic and event locations in Brussels.
+                Search, filter, sort and save your favorite places.
+            </p>
+
+            <div class="controls">
+                <input type="text" id="searchInput" placeholder="Search a place...">
+
+                <select id="postalFilter">
+                    <option value="all">All postal codes</option>
+                </select>
+
+                <select id="sortSelect">
+                    <option value="default">Sort by</option>
+                    <option value="name-asc">Name A-Z</option>
+                    <option value="name-desc">Name Z-A</option>
+                </select>
+
+                <button id="themeToggle">Toggle Theme</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="page-content">
+        <section class="favorites-section">
+            <div class="section-header">
+                <h2>My Favorites</h2>
+                <p>Save places and keep them between sessions.</p>
+            </div>
+            <div id="favoritesContainer"></div>
+        </section>
+
+        <section class="table-section">
+            <div class="section-header">
+                <h2>Places Table</h2>
+                <p>Detailed list view with clear information.</p>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>Postal code</th>
+                            <th>Category</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Website</th>
+                            <th>Favorite</th>
+                        </tr>
+                    </thead>
+                    <tbody id="placesTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="cards-section">
+            <div class="section-header">
+                <h2>Places Cards</h2>
+                <p>Visual overview of Brussels locations.</p>
+            </div>
+            <section id="placesContainer"></section>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

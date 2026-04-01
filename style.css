@@ -1,0 +1,289 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f5f7fb;
+    color: #1f2937;
+}
+
+body.dark-mode {
+    background: #111827;
+    color: #f9fafb;
+}
+
+.hero {
+    background: linear-gradient(135deg, #1e3a5f, #284b7a, #3f6aa1);
+    color: white;
+    padding: 60px 20px 40px 20px;
+}
+
+.hero-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.tag {
+    display: inline-block;
+    margin: 0 0 15px 0;
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.hero h1 {
+    margin: 0;
+    font-size: 42px;
+    line-height: 1.1;
+}
+
+.hero-text {
+    max-width: 700px;
+    margin: 20px auto 0 auto;
+    font-size: 18px;
+    line-height: 1.6;
+    opacity: 0.95;
+}
+
+.controls {
+    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+#searchInput,
+#postalFilter,
+#sortSelect,
+#themeToggle,
+.favorite-btn,
+.remove-btn {
+    border: none;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 15px;
+}
+
+#searchInput,
+#postalFilter,
+#sortSelect {
+    background: white;
+    color: #1f2937;
+    min-height: 44px;
+}
+
+#searchInput {
+    width: 280px;
+}
+
+#themeToggle,
+.favorite-btn,
+.remove-btn {
+    background: #0f172a;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+#themeToggle:hover,
+.favorite-btn:hover,
+.remove-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.92;
+}
+
+.page-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 20px 50px 20px;
+}
+
+.favorites-section,
+.table-section,
+.cards-section {
+    margin-bottom: 40px;
+}
+
+.section-header {
+    margin-bottom: 18px;
+}
+
+.section-header h2 {
+    margin: 0;
+    font-size: 28px;
+    color: #1e3a5f;
+}
+
+.section-header p {
+    margin-top: 8px;
+    color: #6b7280;
+}
+
+body.dark-mode .section-header h2 {
+    color: #93c5fd;
+}
+
+body.dark-mode .section-header p {
+    color: #d1d5db;
+}
+
+#favoritesContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.favorite-card,
+.card,
+.table-wrapper {
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+body.dark-mode .favorite-card,
+body.dark-mode .card,
+body.dark-mode .table-wrapper {
+    background: #1f2937;
+    color: white;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+.favorite-card,
+.card {
+    padding: 20px;
+}
+
+.favorite-card h3,
+.card h2 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    color: #1e3a5f;
+}
+
+body.dark-mode .favorite-card h3,
+body.dark-mode .card h2 {
+    color: #93c5fd;
+}
+
+.favorite-card p,
+.card p {
+    margin: 8px 0;
+    line-height: 1.5;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    padding: 12px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: transparent;
+}
+
+th,
+td {
+    padding: 14px 12px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: top;
+}
+
+body.dark-mode th,
+body.dark-mode td {
+    border-bottom: 1px solid #374151;
+}
+
+th {
+    background: #1e3a5f;
+    color: white;
+    font-size: 15px;
+    position: sticky;
+    top: 0;
+}
+
+td {
+    background: transparent;
+}
+
+td a,
+.card a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+td a:hover,
+.card a:hover {
+    text-decoration: underline;
+}
+
+body.dark-mode td a,
+body.dark-mode .card a {
+    color: #93c5fd;
+}
+
+#placesContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 22px;
+}
+
+.loading,
+.error,
+.no-results,
+.no-favorites {
+    text-align: center;
+    font-size: 18px;
+    padding: 20px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+}
+
+body.dark-mode .loading,
+body.dark-mode .error,
+body.dark-mode .no-results,
+body.dark-mode .no-favorites {
+    background: #1f2937;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .hero {
+        padding: 45px 16px 30px 16px;
+    }
+
+    .hero h1 {
+        font-size: 32px;
+    }
+
+    .hero-text {
+        font-size: 16px;
+    }
+
+    #searchInput,
+    #postalFilter,
+    #sortSelect,
+    #themeToggle {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .section-header h2 {
+        font-size: 24px;
+    }
+
+    th,
+    td {
+        font-size: 14px;
+    }
+}
