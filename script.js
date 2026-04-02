@@ -5,10 +5,10 @@ const searchInput = document.getElementById("searchInput");
 const postalFilter = document.getElementById("postalFilter");
 const sortSelect = document.getElementById("sortSelect");
 const themeToggle = document.getElementById("themeToggle");
+
 const suggestForm = document.getElementById("suggestForm");
-const userName = document.getElementById("userName");
-const userEmail = document.getElementById("userEmail");
-const placeSuggestion = document.getElementById("placeSuggestion");
+const suggestName = document.getElementById("suggestName");
+const suggestEmail = document.getElementById("suggestEmail");
 const formMessage = document.getElementById("formMessage");
 
 const apiUrl = "https://opendata.brussels.be/api/explore/v2.1/catalog/datasets/lieux_culturels_touristiques_evenementiels_visitbrussels_vbx/records?limit=20";
@@ -17,17 +17,18 @@ let allPlaces = [];
 let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 
 loadTheme();
+loadSavedSuggestion();
 fetchPlaces();
 
 async function fetchPlaces() {
-    placesContainer.innerHTML = '<p class="loading">Loading places...</p>';
+    placesContainer.innerHTML = `<p class="loading">Loading places...</p>`;
     placesTableBody.innerHTML = "";
 
     try {
         const response = await fetch(apiUrl);
 
         if (!response.ok) {
-            throw new Error("HTTP error: " + response.status);
+            throw new Error(`HTTP error: ${response.status}`);
         }
 
         const data = await response.json();
@@ -36,50 +37,35 @@ async function fetchPlaces() {
         createPostalOptions(allPlaces);
         updateDisplay();
         displayFavorites();
+
+        wait(500).then(() => {
+            console.log("Promise example finished after loading data.");
+        });
+
     } catch (error) {
         console.error("Fetch error:", error);
-        placesContainer.innerHTML = '<p class="error">Error loading data.</p>';
+        placesContainer.innerHTML = `<p class="error">Error loading data.</p>`;
     }
 }
 
-function getPlaceName(place) {
-    return place.translations_fr_name || "Unknown place";
+function wait(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
 }
 
-function getPlaceAddress(place) {
-    return place.translations_fr_address_line1 || "No address available";
-}
+const getPlaceName = (place) => place.translations_fr_name || "Unknown place";
+const getPlaceAddress = (place) => place.translations_fr_address_line1 || "No address available";
+const getPlacePostalCode = (place) => place.translations_fr_address_zip || "No postal code";
+const getPlacePhone = (place) => place.translations_fr_phone_contact || "No phone number";
+const getPlaceEmail = (place) => place.translations_fr_email || "No email";
+const getPlaceWebsite = (place) => place.translations_fr_website || "";
+const getPlaceCategory = (place) =>
+    place.visit_category_en_multi && place.visit_category_en_multi.length > 0
+        ? place.visit_category_en_multi.join(", ")
+        : "No category";
 
-function getPlacePostalCode(place) {
-    return place.translations_fr_address_zip || "No postal code";
-}
-
-function getPlacePhone(place) {
-    return place.translations_fr_phone_contact || "No phone number";
-}
-
-function getPlaceEmail(place) {
-    return place.translations_fr_email || "No email";
-}
-
-function getPlaceWebsite(place) {
-    return place.translations_fr_website || "";
-}
-
-function getPlaceCategory(place) {
-    if (place.visit_category_en_multi && place.visit_category_en_multi.length > 0) {
-        return place.visit_category_en_multi.join(", ");
-    }
-    return "No category";
-}
-
-function isFavorite(placeId) {
-    return favorites.some((favorite) => favorite.id === placeId);
-    if (selectedSort === "name-asc"){
-        filteredPlaces.sort((a, b)) => 
-            getPlaceName(a).toLowerCase().localeCompare(getPlaceName(b).toLowerCase());
-    }
-}
+const isFavorite = (placeId) => favorites.some((favorite) => favorite.id === placeId);
 
 function addToFavorites(place) {
     if (!isFavorite(place.id)) {
@@ -91,10 +77,7 @@ function addToFavorites(place) {
 }
 
 function removeFromFavorites(placeId) {
-    favorites = favorites.filter(function(favorite) {
-        return favorite.id !== placeId;
-    });
-
+    favorites = favorites.filter((favorite) => favorite.id !== placeId);
     localStorage.setItem("favorites", JSON.stringify(favorites));
     displayFavorites();
     updateDisplay();
@@ -104,12 +87,11 @@ function displayFavorites() {
     favoritesContainer.innerHTML = "";
 
     if (favorites.length === 0) {
-        favoritesContainer.innerHTML = '<p class="no-favorites">No favorites saved yet.</p>';
+        favoritesContainer.innerHTML = `<p class="no-favorites">No favorites saved yet.</p>`;
         return;
     }
-    observeCards();
 
-    favorites.forEach(function(place) {
+    favorites.forEach((place) => {
         const card = document.createElement("div");
         card.classList.add("favorite-card");
 
@@ -117,12 +99,12 @@ function displayFavorites() {
         title.textContent = getPlaceName(place);
 
         const address = document.createElement("p");
-        address.innerHTML = "<strong>Address:</strong> " + getPlaceAddress(place);
+        address.innerHTML = `<strong>Address:</strong> ${getPlaceAddress(place)}`;
 
         const removeButton = document.createElement("button");
         removeButton.textContent = "Remove";
         removeButton.classList.add("remove-btn");
-        removeButton.addEventListener("click", function() {
+        removeButton.addEventListener("click", () => {
             removeFromFavorites(place.id);
         });
 
@@ -137,7 +119,16 @@ function displayFavorites() {
 function displayTable(places) {
     placesTableBody.innerHTML = "";
 
-    places.forEach(function(place) {
+    if (places.length === 0) {
+        placesTableBody.innerHTML = `
+            <tr>
+                <td colspan="8">No places found.</td>
+            </tr>
+        `;
+        return;
+    }
+
+    places.forEach((place) => {
         const row = document.createElement("tr");
 
         const nameCell = document.createElement("td");
@@ -161,19 +152,17 @@ function displayTable(places) {
         const websiteCell = document.createElement("td");
         const website = getPlaceWebsite(place);
 
-        if (website !== "") {
-            websiteCell.innerHTML = "<a href='" + website + "' target='_blank'>Visit website</a>";
-        } else {
-            websiteCell.textContent = "No website";
-        }
+        websiteCell.innerHTML = website !== ""
+            ? `<a href="${website}" target="_blank">Visit website</a>`
+            : `No website`;
 
         const favoriteCell = document.createElement("td");
         const favoriteButton = document.createElement("button");
 
-        favoriteButton.textContent = isFavorite(place.id) ? "saved" : "Add";
-
+        favoriteButton.textContent = isFavorite(place.id) ? "Saved" : "Add";
         favoriteButton.classList.add("favorite-btn");
-        favoriteButton.addEventListener("click", function() {
+
+        favoriteButton.addEventListener("click", () => {
             addToFavorites(place);
         });
 
@@ -196,13 +185,12 @@ function displayCards(places) {
     placesContainer.innerHTML = "";
 
     if (places.length === 0) {
-        placesContainer.innerHTML = '<p class="no-results">No places found.</p>';
+        placesContainer.innerHTML = `<p class="no-results">No places found.</p>`;
         placesTableBody.innerHTML = "";
         return;
     }
-    observeCards();
 
-    places.forEach(function(place) {
+    places.forEach((place) => {
         const name = getPlaceName(place);
         const address = getPlaceAddress(place);
         const postalCode = getPlacePostalCode(place);
@@ -212,40 +200,36 @@ function displayCards(places) {
         const category = getPlaceCategory(place);
 
         const card = document.createElement("div");
-        card.classList.add("card");
+        card.classList.add("card", "observe-card");
 
         const title = document.createElement("h2");
         title.textContent = name;
 
         const addressText = document.createElement("p");
-        addressText.innerHTML = "<strong>Address:</strong> " + address;
+        addressText.innerHTML = `<strong>Address:</strong> ${address}`;
 
         const postalCodeText = document.createElement("p");
-        postalCodeText.innerHTML = "<strong>Postal code:</strong> " + postalCode;
+        postalCodeText.innerHTML = `<strong>Postal code:</strong> ${postalCode}`;
 
         const categoryText = document.createElement("p");
-        categoryText.innerHTML = "<strong>Category:</strong> " + category;
+        categoryText.innerHTML = `<strong>Category:</strong> ${category}`;
 
         const phoneText = document.createElement("p");
-        phoneText.innerHTML = "<strong>Phone:</strong> " + phone;
+        phoneText.innerHTML = `<strong>Phone:</strong> ${phone}`;
 
         const emailText = document.createElement("p");
-        emailText.innerHTML = "<strong>Email:</strong> " + email;
+        emailText.innerHTML = `<strong>Email:</strong> ${email}`;
 
         const websiteText = document.createElement("p");
-
-        if (website !== "") {
-            websiteText.innerHTML = "<strong>Website:</strong> <a href='" + website + "' target='_blank'>Visit website</a>";
-        } else {
-            websiteText.innerHTML = "<strong>Website:</strong> No website";
-        }
+        websiteText.innerHTML = website !== ""
+            ? `<strong>Website:</strong> <a href="${website}" target="_blank">Visit website</a>`
+            : `<strong>Website:</strong> No website`;
 
         const favoriteButton = document.createElement("button");
         favoriteButton.classList.add("favorite-btn");
+        favoriteButton.textContent = isFavorite(place.id) ? "Saved to favorites" : "Add to favorites";
 
-        favoriteButton.textContent = isFavorite(place.id) ? "saved to favorites" : "Add to favorites";
-
-        favoriteButton.addEventListener("click", function() {
+        favoriteButton.addEventListener("click", () => {
             addToFavorites(place);
         });
 
@@ -260,14 +244,16 @@ function displayCards(places) {
 
         placesContainer.appendChild(card);
     });
+
+    activateObserver();
 }
 
 function createPostalOptions(places) {
-    postalFilter.innerHTML = '<option value="all">All postal codes</option>';
+    postalFilter.innerHTML = `<option value="all">All postal codes</option>`;
 
     const postalCodes = [];
 
-    places.forEach(function(place) {
+    places.forEach((place) => {
         const code = getPlacePostalCode(place);
 
         if (code !== "No postal code" && !postalCodes.includes(code)) {
@@ -277,7 +263,7 @@ function createPostalOptions(places) {
 
     postalCodes.sort();
 
-    postalCodes.forEach(function(code) {
+    postalCodes.forEach((code) => {
         const option = document.createElement("option");
         option.value = code;
         option.textContent = code;
@@ -286,43 +272,33 @@ function createPostalOptions(places) {
 }
 
 function updateDisplay() {
-   function validateForm(event) {
-    event.preventDefault();
+    let filteredPlaces = [...allPlaces];
 
-    const nameValue = userName.value.trim();
-    const emailValue = userEmail.value.trim();
-    const suggestionValue = placeSuggestion.value.trim();
+    const searchValue = searchInput.value.toLowerCase().trim();
+    const selectedPostalCode = postalFilter.value;
+    const selectedSort = sortSelect.value;
 
-    if (nameValue === "" || emailValue === "" || suggestionValue === "") {
-        formMessage.textContent = "Please fill in all fields.";
-        formMessage.style.color = "red";
-        return;
-    }
+    filteredPlaces = filteredPlaces.filter((place) => {
+        const name = getPlaceName(place).toLowerCase();
+        const address = getPlaceAddress(place).toLowerCase();
+        const postalCode = getPlacePostalCode(place);
 
-    if (!emailValue.includes("@")) {
-        formMessage.textContent = "Please enter a valid email address.";
-        formMessage.style.color = "red";
-        return;
-    }
+        const matchesSearch = name.includes(searchValue) || address.includes(searchValue);
+        const matchesPostalCode = selectedPostalCode === "all" ? true : postalCode === selectedPostalCode;
 
-    formMessage.textContent = "Suggestion submitted successfully!";
-    formMessage.style.color = "green";
-
-    suggestForm.reset();
-}
-suggestForm.addEventListener("submit", validateForm);
-
+        return matchesSearch && matchesPostalCode;
+    });
 
     if (selectedSort === "name-asc") {
-        filteredPlaces.sort(function(a, b) {
-            return getPlaceName(a).toLowerCase().localeCompare(getPlaceName(b).toLowerCase());
-        });
+        filteredPlaces.sort((a, b) =>
+            getPlaceName(a).toLowerCase().localeCompare(getPlaceName(b).toLowerCase())
+        );
     }
 
     if (selectedSort === "name-desc") {
-        filteredPlaces.sort(function(a, b) {
-            return getPlaceName(b).toLowerCase().localeCompare(getPlaceName(a).toLowerCase());
-        });
+        filteredPlaces.sort((a, b) =>
+            getPlaceName(b).toLowerCase().localeCompare(getPlaceName(a).toLowerCase())
+        );
     }
 
     displayTable(filteredPlaces);
@@ -336,32 +312,77 @@ function loadTheme() {
         document.body.classList.add("dark-mode");
     }
 }
-function observeCards() {
-    const cards = document.querySelectorAll(".card, .favorite-card");
 
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-                entry.target.classList.add("show");
-            }
-        });
-    });
+function loadSavedSuggestion() {
+    const savedName = localStorage.getItem("suggestName") || "";
+    const savedEmail = localStorage.getItem("suggestEmail") || "";
 
-    cards.forEach(function(card) {
-        observer.observe(card);
-    });
+    suggestName.value = savedName;
+    suggestEmail.value = savedEmail;
 }
 
-themeToggle.addEventListener("click", function() {
+function validateForm(name, email) {
+    if (name.trim() === "" || email.trim() === "") {
+        formMessage.textContent = "Please fill in all fields.";
+        return false;
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(email)) {
+        formMessage.textContent = "Please enter a valid email address.";
+        return false;
+    }
+
+    formMessage.textContent = "Form submitted successfully.";
+    return true;
+}
+
+function activateObserver() {
+    const cards = document.querySelectorAll(".observe-card");
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+            }
+        });
+    }, {
+        threshold: 0.2
+    });
+
+    cards.forEach((card) => observer.observe(card));
+}
+
+themeToggle.addEventListener("click", () => {
     document.body.classList.toggle("dark-mode");
 
-    if (document.body.classList.contains("dark-mode")) {
-        localStorage.setItem("theme", "dark");
-    } else {
-        localStorage.setItem("theme", "light");
-    }
+    const currentTheme = document.body.classList.contains("dark-mode") ? "dark" : "light";
+    localStorage.setItem("theme", currentTheme);
 });
 
 searchInput.addEventListener("input", updateDisplay);
 postalFilter.addEventListener("change", updateDisplay);
 sortSelect.addEventListener("change", updateDisplay);
+
+suggestName.addEventListener("input", () => {
+    localStorage.setItem("suggestName", suggestName.value);
+});
+
+suggestEmail.addEventListener("input", () => {
+    localStorage.setItem("suggestEmail", suggestEmail.value);
+});
+
+suggestForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const name = suggestName.value;
+    const email = suggestEmail.value;
+
+    const isValid = validateForm(name, email);
+
+    if (isValid) {
+        localStorage.setItem("suggestName", name);
+        localStorage.setItem("suggestEmail", email);
+    }
+});
