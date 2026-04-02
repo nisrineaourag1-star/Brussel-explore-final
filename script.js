@@ -5,6 +5,11 @@ const searchInput = document.getElementById("searchInput");
 const postalFilter = document.getElementById("postalFilter");
 const sortSelect = document.getElementById("sortSelect");
 const themeToggle = document.getElementById("themeToggle");
+const suggestForm = document.getElementById("suggestForm");
+const userName = document.getElementById("userName");
+const userEmail = document.getElementById("userEmail");
+const placeSuggestion = document.getElementById("placeSuggestion");
+const formMessage = document.getElementById("formMessage");
 
 const apiUrl = "https://opendata.brussels.be/api/explore/v2.1/catalog/datasets/lieux_culturels_touristiques_evenementiels_visitbrussels_vbx/records?limit=20";
 
@@ -279,22 +284,32 @@ function createPostalOptions(places) {
 }
 
 function updateDisplay() {
-    let filteredPlaces = [...allPlaces];
+   function validateForm(event) {
+    event.preventDefault();
 
-    const searchValue = searchInput.value.toLowerCase();
-    const selectedPostalCode = postalFilter.value;
-    const selectedSort = sortSelect.value;
+    const nameValue = userName.value.trim();
+    const emailValue = userEmail.value.trim();
+    const suggestionValue = placeSuggestion.value.trim();
 
-    filteredPlaces = filteredPlaces.filter(function(place) {
-        const name = getPlaceName(place).toLowerCase();
-        const address = getPlaceAddress(place).toLowerCase();
-        const postalCode = getPlacePostalCode(place);
+    if (nameValue === "" || emailValue === "" || suggestionValue === "") {
+        formMessage.textContent = "Please fill in all fields.";
+        formMessage.style.color = "red";
+        return;
+    }
 
-        const matchesSearch = name.includes(searchValue) || address.includes(searchValue);
-        const matchesPostalCode = selectedPostalCode === "all" || postalCode === selectedPostalCode;
+    if (!emailValue.includes("@")) {
+        formMessage.textContent = "Please enter a valid email address.";
+        formMessage.style.color = "red";
+        return;
+    }
 
-        return matchesSearch && matchesPostalCode;
-    });
+    formMessage.textContent = "Suggestion submitted successfully!";
+    formMessage.style.color = "green";
+
+    suggestForm.reset();
+}
+suggestForm.addEventListener("submit", validateForm);
+
 
     if (selectedSort === "name-asc") {
         filteredPlaces.sort(function(a, b) {
