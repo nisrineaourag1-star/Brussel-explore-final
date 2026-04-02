@@ -164,11 +164,7 @@ function displayTable(places) {
         const favoriteCell = document.createElement("td");
         const favoriteButton = document.createElement("button");
 
-        if (isFavorite(place.id)) {
-            favoriteButton.textContent = "Saved";
-        } else {
-            favoriteButton.textContent = "Add";
-        }
+        favoriteButton.textContent = isFavorite(place.id) ? "saved" : "Add";
 
         favoriteButton.classList.add("favorite-btn");
         favoriteButton.addEventListener("click", function() {
@@ -240,11 +236,7 @@ function displayCards(places) {
         const favoriteButton = document.createElement("button");
         favoriteButton.classList.add("favorite-btn");
 
-        if (isFavorite(place.id)) {
-            favoriteButton.textContent = "Saved to favorites";
-        } else {
-            favoriteButton.textContent = "Add to favorites";
-        }
+        favoriteButton.textContent = isFavorite(place.id) ? "saved to favorites" : "Add to favorites";
 
         favoriteButton.addEventListener("click", function() {
             addToFavorites(place);
