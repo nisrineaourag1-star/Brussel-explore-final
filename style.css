@@ -287,3 +287,50 @@ body.dark-mode .no-favorites {
         font-size: 14px;
     }
 }
+.form-section {
+    margin-bottom: 40px;
+}
+
+#suggestForm {
+    background: white;
+    padding: 20px;
+    border-radius: 18px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+body.dark-mode #suggestForm {
+    background: #1f2937;
+    color: white;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+.submit-btn {
+    padding: 12px 16px;
+    border: none;
+    border-radius: 12px;
+    background: #1e3a5f;
+    color: white;
+    cursor: pointer;
+}
+
+#formMessage {
+    margin-top: 12px;
+    font-weight: bold;
+}
