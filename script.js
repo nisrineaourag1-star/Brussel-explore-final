@@ -69,9 +69,11 @@ function getPlaceCategory(place) {
 }
 
 function isFavorite(placeId) {
-    return favorites.some(function(favorite) {
-        return favorite.id === placeId;
-    });
+    return favorites.some((favorite) => favorite.id === placeId);
+    if (selectedSort === "name-asc"){
+        filteredPlaces.sort((a, b)) => 
+            getPlaceName(a).toLowerCase().localeCompare(getPlaceName(b).toLowerCase());
+    }
 }
 
 function addToFavorites(place) {
