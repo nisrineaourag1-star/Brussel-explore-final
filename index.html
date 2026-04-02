@@ -36,6 +36,32 @@
     </header>
 
     <main class="page-content">
+        <section class="form-section">
+    <div class="section-header">
+        <h2>Suggest a Place</h2>
+        <p>Send a suggestion for a cultural place in Brussels.</p>
+    </div>
+
+    <form id="suggestForm">
+        <div class="form-group">
+            <label for="userName">Your name</label>
+            <input type="text" id="userName" name="userName">
+        </div>
+
+        <div class="form-group">
+            <label for="userEmail">Your email</label>
+            <input type="email" id="userEmail" name="userEmail">
+        </div>
+
+        <div class="form-group">
+            <label for="placeSuggestion">Place suggestion</label>
+            <input type="text" id="placeSuggestion" name="placeSuggestion">
+        </div>
+
+        <button type="submit" class="submit-btn">Submit suggestion</button>
+        <p id="formMessage"></p>
+    </form>
+</section>
         <section class="favorites-section">
             <div class="section-header">
                 <h2>My Favorites</h2>
