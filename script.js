@@ -107,6 +107,7 @@ function displayFavorites() {
         favoritesContainer.innerHTML = '<p class="no-favorites">No favorites saved yet.</p>';
         return;
     }
+    observeCards();
 
     favorites.forEach(function(place) {
         const card = document.createElement("div");
@@ -199,6 +200,7 @@ function displayCards(places) {
         placesTableBody.innerHTML = "";
         return;
     }
+    observeCards();
 
     places.forEach(function(place) {
         const name = getPlaceName(place);
@@ -333,6 +335,21 @@ function loadTheme() {
     if (savedTheme === "dark") {
         document.body.classList.add("dark-mode");
     }
+}
+function observeCards() {
+    const cards = document.querySelectorAll(".card, .favorite-card");
+
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("show");
+            }
+        });
+    });
+
+    cards.forEach(function(card) {
+        observer.observe(card);
+    });
 }
 
 themeToggle.addEventListener("click", function() {
