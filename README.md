@@ -21,7 +21,7 @@ De data wordt opgehaald met JavaScript (Fetch API) en verwerkt als JSON.
 ________________________________________
 Installatiehandleiding
 Volg deze stappen om het project lokaal te openen:
-git clone https://github.com/jouwrepo/projectnaam.git
+git clone https://github.com/nisrineaourag1-star/Brussel-explore-final.git
 Open het project in Visual Studio Code
 Start met Live Server
 ________________________________________
